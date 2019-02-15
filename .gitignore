@@ -37,5 +37,8 @@ nosetests.xml
 .pydevproject
 *.autosave
 
+# VS Code
+*.vscode
+
 CATKIN_IGNORE
 *.user
