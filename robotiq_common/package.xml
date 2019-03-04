@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <name>robotiq_common</name>
+  <version>0.0.0</version>
+  <description>A package to avoid copying code between 2f and 3f grippers</description>
+
+  <maintainer email="thomas@ascent.ai">Tom Stewart</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>roscpp</run_depend>
+
+</package>
