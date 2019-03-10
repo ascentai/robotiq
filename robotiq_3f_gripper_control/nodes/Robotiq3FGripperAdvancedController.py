@@ -3,23 +3,27 @@ import rospy
 import numpy as np
 import copy
 from std_msgs.msg import Float32
-from robotiq_common.finger_joint import FingerJoint
+from std_srvs.srv import Trigger
+from robotiq_common.FingerJoint import FingerJoint
 from robotiq_common.msg import FingerJointCmd
 from robotiq_3f_gripper_control.msg import Robotiq3FGripper_robot_input, Robotiq3FGripper_robot_output
 
 
 class ThreeFingerGripperController:
-    def __init__(self):        
+    def __init__(self):
         self.joints = {name : FingerJoint(name) for name in ['fingerA','fingerB','fingerC','scissor']}
         self.output_pub = rospy.Publisher('Robotiq3FGripperRobotOutput', Robotiq3FGripper_robot_output, queue_size=1)
 
-        rospy.sleep(0.5)
-        self.output_pub.publish(Robotiq3FGripper_robot_output())
-        rospy.sleep(0.5)
+        msg = rospy.wait_for_message('Robotiq3FGripperRobotInput', Robotiq3FGripper_robot_input)
+
+        if msg.gSTA != 3:
+            self.output_pub.publish(Robotiq3FGripper_robot_output())
+            rospy.sleep(0.1)
+
         self.output_pub.publish(self.make_cmd())
 
         self.input_sub = rospy.Subscriber('Robotiq3FGripperRobotInput', Robotiq3FGripper_robot_input, self.input_cb)
-        self.update_sub = rospy.Subscriber('finger_joint_cmds', FingerJointCmd, self.update_cb)
+        self.update_sub = rospy.Subscriber('FingerJointCmds', FingerJointCmd, self.update_cb)
 
     def make_cmd(self):
         cmd = Robotiq3FGripper_robot_output(rACT=1, rGTO=1, rICF=1, rICS=1)
