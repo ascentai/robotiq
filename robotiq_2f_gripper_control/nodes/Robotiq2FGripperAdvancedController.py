@@ -7,16 +7,7 @@ from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_input, Robotiq
 
 class TwoFingerGripperController(AdvancedController):
     def __init__(self):
-        super(TwoFingerGripperController, self).__init__(['fingers'])
-
-        self.output_pub = rospy.Publisher('Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_output, queue_size=1)
-
-        if rospy.wait_for_message('Robotiq2FGripperRobotInput', Robotiq2FGripper_robot_input).gSTA != 3:
-            self.output_pub.publish(Robotiq2FGripper_robot_output())
-            rospy.sleep(0.1)
-
-        self.output_pub.publish(self.make_cmd())
-        self.input_sub = rospy.Subscriber('Robotiq2FGripperRobotInput', Robotiq2FGripper_robot_input, self.input_cb)
+        super(TwoFingerGripperController, self).__init__(['fingerA', 'fingerB', 'fingerC', 'scissor'], 'Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_input, 'Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_output)
 
     def msg_from_list(self, lst):
         cmd = Robotiq2FGripper_robot_output(rACT=1, rGTO=1)

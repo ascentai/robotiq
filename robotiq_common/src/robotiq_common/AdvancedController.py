@@ -35,12 +35,22 @@ class GripperJoint:
 
 
 class AdvancedController:
-    def __init__(self, joint_names):
+    def __init__(self, joint_names, input_topic, input_type, output_topic, output_type):
         self.joint_names = joint_names
         self.joints = {name: GripperJoint(name) for name in self.joint_names}
+        self.output_pub = rospy.Publisher(output_topic, output_type, queue_size=1)
+        self.input_sub = rospy.Subscriber(input_topic, input_type, self.input_cb)
         self.feedback_pub = rospy.Publisher('Feedback', JointState, queue_size=1)
         self.update_sub = rospy.Subscriber('GripperCmd', JointState, self.update_cb)  
-        self.output_pub = None
+
+        while not rospy.is_shutdown() and self.ready is None:
+            rospy.sleep(0.01)
+
+        if not self.ready:
+            self.output_pub.publish(output_topic())
+            rospy.sleep(0.1)
+
+        self.output_pub.publish(self.make_cmd())
 
     @abstractmethod
     def msg_from_list(self, lst):
@@ -61,6 +71,8 @@ class AdvancedController:
         self.output_pub.publish(self.make_cmd())
 
     def input_cb(self, msg):
+        self.ready = msg.gSTA == 3
+
         joint_state_msg = JointState()
 
         for name, reg in zip(self.joint_names, self.list_from_msg(msg)):
