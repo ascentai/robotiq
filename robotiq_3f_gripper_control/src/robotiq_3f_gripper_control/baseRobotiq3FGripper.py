@@ -141,7 +141,7 @@ class robotiqbaseRobotiq3FGripper:
         self.message.append(command.rFRC)
         self.message.append(command.rPRS)
         self.message.append(command.rSPS)
-        self.message.append(command.rFRS)        
+        self.message.append(command.rFRS)
 
     def sendCommand(self):
         """Send the command to the Gripper."""    
