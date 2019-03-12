@@ -38,10 +38,12 @@ class AdvancedController:
     def __init__(self, joint_names):
         self.joint_names = joint_names
         self.joints = {name: GripperJoint(name) for name in self.joint_names}
+        self.feedback_pub = rospy.Publisher('Feedback', JointState, queue_size=1)
         self.update_sub = rospy.Subscriber('GripperCmd', JointState, self.update_cb)  
+        self.output_pub = None
 
     @abstractmethod
-    def msg_from_list(self, l):
+    def msg_from_list(self, lst):
         pass
 
     @abstractmethod
@@ -59,7 +61,13 @@ class AdvancedController:
         self.output_pub.publish(self.make_cmd())
 
     def input_cb(self, msg):
-        regs = self.list_from_msg(msg)
+        joint_state_msg = JointState()
 
-        for name, reg in zip(self.joint_names, regs):
-            self.joints[name].publish_feedback(*reg)
+        for name, reg in zip(self.joint_names, self.list_from_msg(msg)):
+            self.joints[name].parse_feedback(*reg)
+            joint_state_msg.name.append(name)
+            joint_state_msg.position.append(self.joints[name].position)
+            joint_state_msg.effort.append(self.joints[name].current)
+
+        self.feedback_pub.publish(joint_state_msg)
+
