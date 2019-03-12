@@ -2,8 +2,6 @@
 import rospy
 import numpy as np
 from std_msgs.msg import Float32
-from robotiq_common.FingerJoint import FingerJoint
-from robotiq_common.msg import FingerJointCmd
 from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_output, Robotiq2FGripper_robot_input
 
 
