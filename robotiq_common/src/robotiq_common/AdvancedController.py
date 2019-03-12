@@ -2,10 +2,10 @@
 import rospy
 import numpy as np
 from abc import abstractmethod
-from sensor_msgs import JointState
+from sensor_msgs.msg import JointState
 
 
-class GripperJoint:
+class GripperJoint(object):
     MIN_SPEED = 22.
     MAX_SPEED = 110.
     MIN_FORCE = 15.
@@ -34,10 +34,12 @@ class GripperJoint:
         return self.registers
 
 
-class AdvancedController:
+class AdvancedController(object):
     def __init__(self, joint_names, input_topic, input_type, output_topic, output_type):
+        self.ready = None
         self.joint_names = joint_names
         self.joints = {name: GripperJoint(name) for name in self.joint_names}
+
         self.output_pub = rospy.Publisher(output_topic, output_type, queue_size=1)
         self.input_sub = rospy.Subscriber(input_topic, input_type, self.input_cb)
         self.feedback_pub = rospy.Publisher('Feedback', JointState, queue_size=1)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import rospy
 from robotiq_common.AdvancedController import AdvancedController
-from sensor_msgs.msg import JointState
 from robotiq_3f_gripper_control.msg import Robotiq3FGripper_robot_input, Robotiq3FGripper_robot_output
 
 
