@@ -10,9 +10,9 @@ class ThreeFingerGripperController(AdvancedController):
 
     def msg_from_list(self, lst):
         cmd = Robotiq3FGripper_robot_output(rACT=1, rGTO=1, rICF=1, rICS=1)
-        cmd.rPRA, cmd.rSPA, cmd.rFRA,
-        cmd.rPRB, cmd.rSPB, cmd.rFRB,
-        cmd.rPRC, cmd.rSPC, cmd.rFRC,
+        cmd.rPRA, cmd.rSPA, cmd.rFRA, \
+        cmd.rPRB, cmd.rSPB, cmd.rFRB, \
+        cmd.rPRC, cmd.rSPC, cmd.rFRC, \
         cmd.rPRS, cmd.rSPS, cmd.rFRS = lst
         return cmd
 

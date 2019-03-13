@@ -27,8 +27,8 @@ class GripperJoint(object):
         self.position_cmd_echo = 1. - pos_cmd_reg / 255.
         self.current = curr_reg * 0.01
 
-    def update_setpoint(self, msg):
-        self.registers[0] = int(np.clip(255 - msg.data * 255, 0, 255))
+    def update_setpoint(self, sp):
+        self.registers[0] = int(np.clip(255 - sp * 255, 0, 255))
 
     def get_registers(self):
         return self.registers
@@ -49,7 +49,7 @@ class AdvancedController(object):
             rospy.sleep(0.01)
 
         if not self.ready:
-            self.output_pub.publish(output_topic())
+            self.output_pub.publish(output_type())
             rospy.sleep(0.1)
 
         self.output_pub.publish(self.make_cmd())
@@ -63,7 +63,7 @@ class AdvancedController(object):
         pass
 
     def make_cmd(self):
-        return self.msg_from_list([reg for reg in self.joints[name].get_registers() for name in self.joint_names])
+        return self.msg_from_list([reg for name in self.joint_names for reg in self.joints[name].get_registers()])
 
     def update_cb(self, msg):
         for name, position in zip(msg.name, msg.position):

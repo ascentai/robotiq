@@ -20,7 +20,6 @@ add_message_files(
   FILES
   Robotiq3FGripper_robot_input.msg
   Robotiq3FGripper_robot_output.msg
-  Robotiq3fGripperCmd.msg
 )
 
 catkin_python_setup()
