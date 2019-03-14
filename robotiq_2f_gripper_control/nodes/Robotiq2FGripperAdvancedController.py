@@ -6,7 +6,7 @@ from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_input, Robotiq
 
 class TwoFingerGripperController(AdvancedController):
     def __init__(self):
-        super(TwoFingerGripperController, self).__init__(['gripper'], 'Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_input, 'Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_output)
+        super(TwoFingerGripperController, self).__init__(['gripper'], 'Robotiq2FGripperRobotInput', Robotiq2FGripper_robot_input, 'Robotiq2FGripperRobotOutput', Robotiq2FGripper_robot_output)
 
     def msg_from_list(self, lst):
         cmd = Robotiq2FGripper_robot_output(rACT=1, rGTO=1)
