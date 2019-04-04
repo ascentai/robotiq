@@ -12,14 +12,15 @@ class GripperJoint(object):
     MAX_FORCE = 60.
 
     def __init__(self, name):
+        self.position_range = rospy.get_param(name + '/position_range', [0.0, 1.0])
         position = rospy.get_param(name + '/position', 1.0)
         speed = rospy.get_param(name + '/speed', GripperJoint.MAX_SPEED)
-        force = rospy.get_param(name + '/force', GripperJoint.MIN_FORCE)
+        force = rospy.get_param(name + '/force', GripperJoint.MAX_FORCE)
 
         self.registers = [
             int(np.clip(255 - position * 255, 0, 255)),
-            int(np.clip(speed - GripperJoint.MIN_SPEED / (GripperJoint.MAX_SPEED - GripperJoint.MIN_SPEED) * 255, 0, 255)),
-            int(np.clip(force - GripperJoint.MIN_FORCE / (GripperJoint.MAX_FORCE - GripperJoint.MIN_FORCE) * 255, 0, 255))
+            int(np.clip((speed - GripperJoint.MIN_SPEED) / (GripperJoint.MAX_SPEED - GripperJoint.MIN_SPEED) * 255, 0, 255)),
+            int(np.clip((force - GripperJoint.MIN_FORCE) / (GripperJoint.MAX_FORCE - GripperJoint.MIN_FORCE) * 255, 0, 255))
         ]
 
     def parse_feedback(self, pos_reg, pos_cmd_reg, curr_reg):
@@ -28,6 +29,7 @@ class GripperJoint(object):
         self.current = curr_reg * 0.01
 
     def update_setpoint(self, sp):
+        sp = min(max(sp, self.position_range[0]), self.position_range[1])
         self.registers[0] = int(np.clip(255 - sp * 255, 0, 255))
 
     def get_registers(self):
