@@ -89,6 +89,9 @@ class communication:
       if response is None or isinstance(response, WriteMultipleRegistersResponse):
          raise ModbusIOException('No response from client')
 
+      if isinstance(response, ModbusIOException):
+         raise response
+
       #Instantiate output as an empty list
       output = []
 
